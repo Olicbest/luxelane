@@ -64,27 +64,28 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   // --------------------
   // Cart Operations
   // --------------------
-  const addToCart = (product: CartItem) => {
-    const normalized = normalizeProduct(product);
-    let message = "";
+  const addToCart = (product: Omit<CartItem, "quantity"> & { images?: string[] }) => {
+  const normalized = normalizeProduct(product as CartItem);
+  let message = "";
 
-    setCart((prev) => {
-      const existing = prev.find((item) => item.id === normalized.id);
+  setCart((prev) => {
+    const existing = prev.find((item) => item.id === normalized.id);
 
-      if (existing) {
-        message = `${normalized.name} quantity increased 🛒`;
-        return prev.map((item) =>
-          item.id === normalized.id ? { ...item, quantity: item.quantity + 1 } : item
-        );
-      }
+    if (existing) {
+      message = `${normalized.name} quantity increased 🛒`;
+      return prev.map((item) =>
+        item.id === normalized.id
+          ? { ...item, quantity: item.quantity + 1 }
+          : item
+      );
+    }
 
-      message = `${normalized.name} added to cart ✅`;
-      return [...prev, { ...normalized, quantity: 1 }];
-    });
+    message = `${normalized.name} added to cart ✅`;
+    return [...prev, { ...normalized, quantity: 1 }];
+  });
 
-    // Toast outside of state update
-    toast.success(message);
-  };
+  toast.success(message);
+};
 
   const decreaseQuantity = (id: number) => {
     setCart((prev) =>
