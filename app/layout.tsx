@@ -12,10 +12,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body className="flex flex-col min-h-screen">
-        <Script
+        <script
           src="https://js.paystack.co/v1/inline.js"
-          strategy="beforeInteractive"
-        />
+          async
+        ></script>
         <CartProvider>
           <Navbar />
           
