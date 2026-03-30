@@ -1,13 +1,38 @@
 "use client";
-import { createContext, useContext, useState, useEffect, useMemo } from "react";
+
+import { createContext, useContext, useState, useEffect, useMemo, ReactNode } from "react";
 import toast from "react-hot-toast";
 
-const CartContext = createContext(null);
+// --------------------
+// Types
+// --------------------
+export interface CartItem {
+  id: number;
+  name: string;
+  price: number;
+  quantity: number;
+  image?: string;
+}
 
-export const CartProvider = ({ children }) => {
-  const [cart, setCart] = useState([]);
+interface CartContextType {
+  cart: CartItem[];
+  addToCart: (product: CartItem) => void;
+  decreaseQuantity: (id: number) => void;
+  removeItem: (id: number) => void;
+  clearCart: () => void;
+  total: number;
+  itemCount: number;
+}
 
-  // Load cart safely
+// --------------------
+// Context
+// --------------------
+const CartContext = createContext<CartContextType | undefined>(undefined);
+
+export const CartProvider = ({ children }: { children: ReactNode }) => {
+  const [cart, setCart] = useState<CartItem[]>([]);
+
+  // Load cart from localStorage
   useEffect(() => {
     try {
       const stored = localStorage.getItem("cart");
@@ -17,7 +42,7 @@ export const CartProvider = ({ children }) => {
     }
   }, []);
 
-  // Persist cart safely
+  // Persist cart to localStorage
   useEffect(() => {
     try {
       localStorage.setItem("cart", JSON.stringify(cart));
@@ -26,99 +51,75 @@ export const CartProvider = ({ children }) => {
     }
   }, [cart]);
 
-  // Normalize product before adding
-  const normalizeProduct = (product) => {
+  // --------------------
+  // Helpers
+  // --------------------
+  const normalizeProduct = (product: CartItem) => {
     return {
       ...product,
-      image: product.image || product.images?.[0] || "/placeholder.png", // ✅ fallback
+      image: product.image || (product as any).images?.[0] || "/placeholder.png",
     };
   };
 
-  // Add to cart
- 
+  // --------------------
+  // Cart Operations
+  // --------------------
+  const addToCart = (product: CartItem) => {
+    const normalized = normalizeProduct(product);
+    let message = "";
 
-const addToCart = (product) => {
-  const normalized = normalizeProduct(product);
+    setCart((prev) => {
+      const existing = prev.find((item) => item.id === normalized.id);
 
-  let message = "";
+      if (existing) {
+        message = `${normalized.name} quantity increased 🛒`;
+        return prev.map((item) =>
+          item.id === normalized.id ? { ...item, quantity: item.quantity + 1 } : item
+        );
+      }
 
-  setCart((prev) => {
-    const existing = prev.find((item) => item.id === normalized.id);
+      message = `${normalized.name} added to cart ✅`;
+      return [...prev, { ...normalized, quantity: 1 }];
+    });
 
-    if (existing) {
-      message = `${normalized.name} quantity increased 🛒`;
-      return prev.map((item) =>
-        item.id === normalized.id
-          ? { ...item, quantity: item.quantity + 1 }
-          : item
-      );
-    }
+    // Toast outside of state update
+    toast.success(message);
+  };
 
-    message = `${normalized.name} added to cart ✅`;
-    return [...prev, { ...normalized, quantity: 1 }];
-  });
-
-  // ✅ SAFE PLACE (outside React render)
-  toast.success(message);
-};
-
-  // Decrease quantity
-  const decreaseQuantity = (id) => {
+  const decreaseQuantity = (id: number) => {
     setCart((prev) =>
       prev
-        .map((item) =>
-          item.id === id
-            ? { ...item, quantity: item.quantity - 1 }
-            : item
-        )
+        .map((item) => (item.id === id ? { ...item, quantity: item.quantity - 1 } : item))
         .filter((item) => item.quantity > 0)
     );
   };
 
-  // Remove item completely
-  const removeItem = (id) => {
+  const removeItem = (id: number) => {
     setCart((prev) => prev.filter((item) => item.id !== id));
   };
 
-  // Clear cart
   const clearCart = () => setCart([]);
 
-  // Total price
-  const total = useMemo(() => {
-    return cart.reduce(
-      (sum, item) => sum + item.price * item.quantity,
-      0
-    );
-  }, [cart]);
-
-  // Total items count
-  const itemCount = useMemo(() => {
-    return cart.reduce((count, item) => count + item.quantity, 0);
-  }, [cart]);
+  // --------------------
+  // Totals
+  // --------------------
+  const total = useMemo(() => cart.reduce((sum, item) => sum + item.price * item.quantity, 0), [cart]);
+  const itemCount = useMemo(() => cart.reduce((count, item) => count + item.quantity, 0), [cart]);
 
   return (
     <CartContext.Provider
-      value={{
-        cart,
-        addToCart,
-        decreaseQuantity,
-        removeItem,
-        clearCart,
-        total,
-        itemCount,
-      }}
+      value={{ cart, addToCart, decreaseQuantity, removeItem, clearCart, total, itemCount }}
     >
       {children}
     </CartContext.Provider>
   );
 };
 
-export const useCart = () => {
+// --------------------
+// Hook
+// --------------------
+export const useCart = (): CartContextType => {
   const context = useContext(CartContext);
-
-  if (!context) {
-    throw new Error("useCart must be used within CartProvider");
-  }
-
+  if (!context) throw new Error("useCart must be used within CartProvider");
   return context;
 };
