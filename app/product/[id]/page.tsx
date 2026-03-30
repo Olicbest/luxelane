@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { useParams } from "next/navigation";
-import products from "../../data/products";
-import { useCart } from "../../context/CartContext";
+import products from "../../../data/products";
+import { useCart } from "../../../context/CartContext";
 import { FaStar, FaStarHalfAlt, FaRegStar } from "react-icons/fa";
 
 export default function ProductPage() {
