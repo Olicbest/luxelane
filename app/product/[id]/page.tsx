@@ -118,11 +118,19 @@ export default function ProductPage() {
         </div>
 
         <button
-          onClick={() => addToCart(product)}
-          className="bg-blue-600 text-white py-3 px-6 rounded-xl hover:bg-blue-700 transition font-medium shadow-md"
-        >
-          Add to Cart
-        </button>
+  onClick={() =>
+    addToCart({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      quantity: 1,
+      image: product.images?.[0],
+    })
+  }
+  className="bg-blue-600 text-white py-3 px-6 rounded-xl hover:bg-blue-700 transition font-medium shadow-md"
+>
+  Add to Cart
+</button>
       </div>
 
     </div>
