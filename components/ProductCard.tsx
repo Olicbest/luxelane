@@ -2,7 +2,20 @@
 import React, { useState } from "react";
 import { useCart } from "../context/CartContext";
 
-export default function ProductCard({ product }) {
+// ✅ ADD THIS TYPE
+type Product = {
+  id: number;
+  name: string;
+  price: number;
+  category: string;
+  images: string[];
+  description: string;
+  rating?: number;
+  reviews?: number;
+};
+
+// ✅ APPLY TYPE HERE
+export default function ProductCard({ product }: { product: Product }) {
   const { addToCart } = useCart();
   const [currentImage, setCurrentImage] = useState(0);
 
@@ -18,15 +31,15 @@ export default function ProductCard({ product }) {
 
   return (
     <div className="border rounded-xl p-4 shadow hover:shadow-lg transition flex flex-col justify-between">
+      
       {/* Image Carousel */}
       <div className="relative w-full h-48 mb-4">
         <img
-          src={product.images[currentImage]}
+          src={product.images[currentImage] || "/placeholder.jpg"}
           alt={product.name}
           className="w-full h-full object-cover rounded-md"
         />
 
-        {/* Navigation */}
         {product.images.length > 1 && (
           <>
             <button
@@ -49,11 +62,22 @@ export default function ProductCard({ product }) {
       <div className="flex-1 mb-4">
         <h2 className="text-lg font-semibold mb-1">{product.name}</h2>
         <p className="text-gray-600 mb-2">{product.description}</p>
-        <p className="font-bold text-blue-600 mb-2">${product.price.toFixed(2)}</p>
+        <p className="font-bold text-blue-600 mb-2">
+          ${product.price.toFixed(2)}
+        </p>
       </div>
 
+      {/* ✅ FIXED addToCart */}
       <button
-        onClick={() => addToCart(product)}
+        onClick={() =>
+          addToCart({
+            id: product.id,
+            name: product.name,
+            price: product.price,
+            quantity: 1,
+            image: product.images?.[0],
+          })
+        }
         className="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition"
       >
         Add to Cart
