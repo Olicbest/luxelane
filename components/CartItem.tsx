@@ -1,8 +1,9 @@
 "use client";
 import React from "react";
 import { useCart } from "../context/CartContext";
+import { CartItem as CartItemType } from "../context/CartContext";
 
-export default function CartItem({ item }) {
+export default function CartItem({ item }: { item: CartItemType }) {
   const { addToCart, decreaseQuantity, removeItem } = useCart();
 
   return (
@@ -37,7 +38,15 @@ export default function CartItem({ item }) {
           <span className="font-medium">{item.quantity}</span>
 
           <button
-            onClick={() => addToCart(item)}
+            onClick={() =>
+              addToCart({
+                id: item.id,
+                name: item.name,
+                price: item.price,
+                quantity: 1,
+                image: item.image,
+              })
+            }
             className="w-8 h-8 flex items-center justify-center bg-gray-200 rounded hover:bg-gray-300 transition"
           >
             +
