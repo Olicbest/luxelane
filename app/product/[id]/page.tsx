@@ -7,12 +7,19 @@ import { useCart } from "../../../context/CartContext";
 import { FaStar, FaStarHalfAlt, FaRegStar } from "react-icons/fa";
 
 export default function ProductPage() {
-  const { id } = useParams();
-  const product = products.find((p) => p.id === parseInt(id));
+  const { id } = useParams<{ id: string }>(); // ✅ typed params
+
+  const product = products.find(
+    (p) => p.id === parseInt(id)
+  );
+
   const { addToCart } = useCart();
   const [currentImage, setCurrentImage] = useState(0);
 
-  if (!product) return <p className="p-6">Product not found.</p>;
+  // ✅ handle invalid product early
+  if (!product) {
+    return <p className="p-6 text-center">Product not found.</p>;
+  }
 
   const nextImage = () => {
     setCurrentImage((prev) => (prev + 1) % product.images.length);
@@ -24,7 +31,7 @@ export default function ProductPage() {
     );
   };
 
-  // --- Generate stars for rating ---
+  // ⭐ Rating renderer
   const renderStars = (rating: number) => {
     const stars = [];
     for (let i = 1; i <= 5; i++) {
@@ -44,10 +51,9 @@ export default function ProductPage() {
 
       {/* LEFT: IMAGE SECTION */}
       <div>
-        {/* Main Image */}
         <div className="relative w-full h-96 mb-4">
           <img
-            src={product.images[currentImage]}
+            src={product.images[currentImage] || "/placeholder.jpg"} // ✅ safe fallback
             alt={product.name}
             className="w-full h-full object-cover rounded-xl shadow"
           />
@@ -96,9 +102,11 @@ export default function ProductPage() {
 
           {/* Rating */}
           <div className="flex items-center mb-4 gap-2">
-            <div className="flex">{renderStars(product.rating || 4.5)}</div>
+            <div className="flex">
+              {renderStars(product.rating ?? 4.5)}
+            </div>
             <span className="text-gray-500 text-sm">
-              ({product.reviews || 120} reviews)
+              ({product.reviews ?? 120} reviews)
             </span>
           </div>
 
