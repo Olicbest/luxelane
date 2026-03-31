@@ -17,36 +17,54 @@ export default function Checkout() {
   const [loading, setLoading] = useState(false);
 
   const handlePayment = () => {
-    if (!form.name || !form.address || !form.email) {
-      alert("Please fill all fields");
-      return;
-    }
+  const key = process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY;
 
-    if (!window.PaystackPop) {
-      alert("Paystack script not loaded yet.");
-      return;
-    }
+  
 
-    setLoading(true);
+  if (!form.name || !form.address || !form.email) {
+    alert("Please fill all fields");
+    return;
+  }
 
-    const handler = window.PaystackPop.setup({
-      key: process.env.NEXT_PUBLIC_PAYSTACK_KEY!,
-      email: form.email,
-      amount: total * 100, // convert to kobo
-      currency: "NGN",
-      callback: function (response) {
-        alert(`Payment successful! Reference: ${response.reference}`);
-        clearCart();
-        router.push("/success");
-      },
-      onClose: function () {
-        alert("Payment was not completed.");
-        setLoading(false);
-      },
-    });
+  if (!key) {
+    alert("Payment key missing");
+    return;
+  }
 
-    handler.openIframe();
-  };
+  if (!total || total <= 0) {
+    alert("Invalid payment amount");
+    return;
+  }
+
+  if (!form.email.includes("@")) {
+    alert("Invalid email");
+    return;
+  }
+
+  if (!window.PaystackPop) {
+    alert("Paystack not loaded");
+    return;
+  }
+
+  const handler = window.PaystackPop.setup({
+    key,
+    email: form.email,
+    amount: Math.round(total * 100), // safer
+    currency: "NGN",
+
+    callback: function (response: any) {
+      alert(`Payment successful! Ref: ${response.reference}`);
+      clearCart();
+      router.push("/success");
+    },
+
+    onClose: function () {
+      alert("Payment cancelled");
+    },
+  });
+
+  handler.openIframe();
+};
 
   if (!cart.length)
     return (
