@@ -7,22 +7,25 @@ import "../styles/globals.css";
 import { Toaster } from "react-hot-toast";
 import Script from "next/script";
 
-
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <body className="flex flex-col min-h-screen">
-        <script
+        
+        {/* ✅ Paystack Script (Correct Way) */}
+        <Script
           src="https://js.paystack.co/v1/inline.js"
-          async
-        ></script>
+          strategy="beforeInteractive"
+        />
+
         <CartProvider>
           <Navbar />
-          
-          {/* Toast Container */}
+
+          {/* Toast Notifications */}
           <Toaster position="top-right" reverseOrder={false} />
 
           <main className="flex-1">{children}</main>
+
           <Footer />
         </CartProvider>
       </body>
