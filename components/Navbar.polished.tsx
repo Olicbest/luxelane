@@ -37,25 +37,20 @@ export default function Navbar() {
   return (
     <>
       <nav className="sticky top-0 z-50 border-b border-slate-200/70 bg-white/90 shadow-[0_10px_35px_-22px_rgba(15,23,42,0.35)] backdrop-blur-xl">
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-3 md:gap-4 md:px-6">
+        <div className="mx-auto flex max-w-7xl items-center gap-3 px-4 py-3 md:gap-4 md:px-6">
           <Link
             href="/"
-            className="flex min-w-0 items-center gap-3 whitespace-nowrap rounded-full pr-2 transition-transform duration-200 hover:scale-[1.01]"
+            className="flex items-center gap-3 whitespace-nowrap rounded-full pr-2 transition-transform duration-200 hover:scale-[1.01]"
           >
             <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-600 via-sky-500 to-cyan-400 text-lg font-black text-white shadow-lg shadow-blue-200">
               L
             </span>
-            <span className="min-w-0">
-              <span className="block truncate text-base font-black tracking-tight text-slate-900 sm:hidden">
+            <span className="hidden sm:block">
+              <span className="block text-lg font-black tracking-tight text-slate-900">
                 LuxeLane
               </span>
-              <span className="hidden sm:block">
-                <span className="block text-lg font-black tracking-tight text-slate-900">
-                  LuxeLane
-                </span>
-                <span className="block text-[11px] uppercase tracking-[0.28em] text-slate-400">
-                  Modern essentials
-                </span>
+              <span className="block text-[11px] uppercase tracking-[0.28em] text-slate-400">
+                Modern essentials
               </span>
             </span>
           </Link>
@@ -204,31 +199,29 @@ export default function Navbar() {
             )}
           </div>
 
-          <div className="flex items-center gap-2 md:hidden">
-            <Link
-              href="/cart"
-              className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-700 shadow-sm"
-              aria-label="Open cart"
-            >
-              <FaShoppingCart size={17} />
-              {totalItems > 0 && (
-                <span className="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-red-500 px-1 text-[11px] font-semibold text-white ring-2 ring-white">
-                  {totalItems}
-                </span>
-              )}
-            </Link>
+          <Link
+            href="/cart"
+            className="relative flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-700 shadow-sm md:hidden"
+            aria-label="Open cart"
+          >
+            <FaShoppingCart size={17} />
+            {totalItems > 0 && (
+              <span className="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-red-500 px-1 text-[11px] font-semibold text-white ring-2 ring-white">
+                {totalItems}
+              </span>
+            )}
+          </Link>
 
-            <button
-              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-slate-200 bg-slate-900 text-lg text-white shadow-sm"
-              onClick={() => setMenuOpen(true)}
-              aria-label="Open menu"
-            >
-              <FaBars />
-            </button>
-          </div>
+          <button
+            className="ml-1 flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-slate-900 text-lg text-white shadow-sm md:hidden"
+            onClick={() => setMenuOpen(true)}
+            aria-label="Open menu"
+          >
+            <FaBars />
+          </button>
         </div>
 
-        <div className="border-t border-slate-200/70 px-4 pb-4 pt-3 md:hidden">
+        <div className="px-4 pb-4 md:hidden">
           <div className="flex items-center rounded-2xl border border-slate-200 bg-slate-50 px-3 shadow-inner shadow-slate-100">
             <FaSearch className="text-sm text-slate-400" />
             <input
@@ -287,9 +280,9 @@ export default function Navbar() {
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
               transition={{ type: "spring", stiffness: 300, damping: 30 }}
-              className="fixed right-0 top-0 z-50 flex h-full w-full max-w-sm flex-col overflow-hidden bg-white shadow-2xl"
+              className="fixed right-0 top-0 z-50 flex h-full w-80 max-w-[88vw] flex-col overflow-hidden bg-white shadow-2xl"
             >
-              <div className="border-b border-slate-200 bg-gradient-to-br from-slate-900 via-blue-900 to-sky-600 px-5 py-5 text-white sm:px-6">
+              <div className="border-b border-slate-200 bg-gradient-to-br from-slate-900 via-blue-900 to-sky-600 px-6 py-5 text-white">
                 <div className="mb-6 flex items-center justify-between">
                   <div>
                     <p className="text-xs uppercase tracking-[0.3em] text-white/65">
@@ -323,7 +316,7 @@ export default function Navbar() {
                 </div>
               </div>
 
-              <div className="flex h-full flex-col gap-6 overflow-y-auto p-5 sm:p-6">
+              <div className="flex h-full flex-col gap-6 overflow-y-auto p-6">
                 <div className="flex flex-col gap-2">
                   <p className="text-xs uppercase tracking-[0.24em] text-slate-400">
                     Navigation

@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import { createContext, useContext, useEffect, useState, ReactNode } from "react";
 
 interface User {
   name: string;
@@ -16,30 +16,42 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null);
+const getStoredUser = () => {
+  if (typeof window === "undefined") {
+    return null;
+  }
 
-  // Load user from localStorage
-  useEffect(() => {
+  try {
     const stored = localStorage.getItem("user");
-    if (stored) setUser(JSON.parse(stored));
-  }, []);
+    return stored ? (JSON.parse(stored) as User) : null;
+  } catch (error) {
+    console.error("Failed to load user:", error);
+    return null;
+  }
+};
 
-  // Save user
+export const AuthProvider = ({ children }: { children: ReactNode }) => {
+  const [user, setUser] = useState<User | null>(() => getStoredUser());
+
   useEffect(() => {
-    if (user) localStorage.setItem("user", JSON.stringify(user));
-    else localStorage.removeItem("user");
+    if (user) {
+      localStorage.setItem("user", JSON.stringify(user));
+      return;
+    }
+
+    localStorage.removeItem("user");
   }, [user]);
 
   const login = (email: string, password: string) => {
-    // demo login (no backend yet)
+    void password;
+
     const stored = localStorage.getItem("user");
     if (!stored) {
       alert("No user found. Please register.");
       return;
     }
 
-    const parsed = JSON.parse(stored);
+    const parsed = JSON.parse(stored) as User;
 
     if (parsed.email === email) {
       setUser(parsed);
@@ -49,6 +61,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const register = (name: string, email: string, password: string) => {
+    void password;
+
     const newUser = { name, email };
     setUser(newUser);
   };
