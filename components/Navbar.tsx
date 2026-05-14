@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
@@ -84,9 +85,11 @@ export default function Navbar() {
                       onClick={() => setQuery("")}
                       className="flex items-center gap-3 rounded-2xl p-3 transition hover:bg-slate-50"
                     >
-                      <img
+                      <Image
                         src={item.images[0]}
                         alt={item.name}
+                        width={44}
+                        height={44}
                         className="h-11 w-11 rounded-xl object-cover"
                       />
                       <div className="min-w-0">
@@ -253,9 +256,11 @@ export default function Navbar() {
                     onClick={() => setQuery("")}
                     className="flex items-center gap-3 px-4 py-3 transition hover:bg-slate-50"
                   >
-                    <img
+                    <Image
                       src={item.images[0]}
                       alt={item.name}
+                      width={40}
+                      height={40}
                       className="h-10 w-10 rounded-xl object-cover"
                     />
                     <span className="truncate text-sm font-medium text-slate-700">
@@ -373,9 +378,11 @@ export default function Navbar() {
                           key={item.id}
                           className="flex items-center gap-3 rounded-2xl bg-white p-2.5 shadow-sm"
                         >
-                          <img
-                            src={item.image}
+                          <Image
+                            src={item.image || "/placeholder.png"}
                             alt={item.name}
+                            width={48}
+                            height={48}
                             className="h-12 w-12 rounded-xl object-cover"
                           />
                           <div className="min-w-0 text-sm">

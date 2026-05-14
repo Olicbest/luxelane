@@ -1,9 +1,9 @@
 "use client";
 
-import React, { useState } from "react";
-import { useCart } from "../context/CartContext";
+import React from "react";
+import Image from "next/image";
 import { FaStar } from "react-icons/fa";
-import { motion } from "framer-motion";
+import { useCart } from "../context/CartContext";
 
 type Product = {
   id: number;
@@ -18,31 +18,25 @@ type Product = {
 
 export default function ProductCard({ product }: { product: Product }) {
   const { addToCart } = useCart();
-  const [currentImage, setCurrentImage] = useState(0);
+  const currentImage = 0;
 
   return (
-    <motion.div
-      whileHover={{ y: -8, scale: 1.02 }}
-      transition={{ type: "spring", stiffness: 200 }}
-      className="group relative bg-white/70 backdrop-blur-lg border border-gray-200 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col"
-    >
-      {/* CATEGORY BADGE */}
-      <span className="absolute top-3 left-3 z-10 text-xs bg-white/90 backdrop-blur px-3 py-1 rounded-full shadow">
+    <div className="group relative flex flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white/70 shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl">
+      <span className="absolute left-3 top-3 z-10 rounded-full bg-white/90 px-3 py-1 text-xs shadow backdrop-blur">
         {product.category}
       </span>
 
-      {/* IMAGE */}
-      <div className="relative w-full h-56 overflow-hidden">
-        <motion.img
+      <div className="relative h-56 w-full overflow-hidden">
+        <Image
           src={product.images[currentImage] || "/placeholder.jpg"}
           alt={product.name}
-          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+          fill
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+          className="object-cover transition-transform duration-500 group-hover:scale-105"
         />
 
-        {/* GRADIENT OVERLAY */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 transition group-hover:opacity-100" />
 
-        {/* QUICK ADD BUTTON */}
         <button
           onClick={() =>
             addToCart({
@@ -53,22 +47,19 @@ export default function ProductCard({ product }: { product: Product }) {
               image: product.images?.[0],
             })
           }
-          className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black text-white px-5 py-2 rounded-full text-sm opacity-0 group-hover:opacity-100 transition hover:bg-gray-900"
+          className="absolute bottom-4 left-1/2 -translate-x-1/2 rounded-full bg-black px-5 py-2 text-sm text-white opacity-0 transition hover:bg-gray-900 group-hover:opacity-100"
         >
           Quick Add
         </button>
       </div>
 
-      {/* CONTENT */}
-      <div className="p-5 flex flex-col flex-1">
-        {/* TITLE */}
-        <h2 className="text-lg font-semibold text-gray-800 line-clamp-1">
+      <div className="flex flex-1 flex-col p-5">
+        <h2 className="line-clamp-1 text-lg font-semibold text-gray-800">
           {product.name}
         </h2>
 
-        {/* RATING */}
-        <div className="flex items-center gap-2 mt-1">
-          <div className="flex text-yellow-500 text-sm">
+        <div className="mt-1 flex items-center gap-2">
+          <div className="flex text-sm text-yellow-500">
             {[...Array(5)].map((_, i) => (
               <FaStar
                 key={i}
@@ -80,17 +71,13 @@ export default function ProductCard({ product }: { product: Product }) {
               />
             ))}
           </div>
-          <span className="text-xs text-gray-500">
-            ({product.reviews ?? 120})
-          </span>
+          <span className="text-xs text-gray-500">({product.reviews ?? 120})</span>
         </div>
 
-        {/* DESCRIPTION */}
-        <p className="text-gray-500 text-sm mt-2 line-clamp-2">
+        <p className="mt-2 line-clamp-2 text-sm text-gray-500">
           {product.description}
         </p>
 
-        {/* PRICE + BUTTON */}
         <div className="mt-auto flex items-center justify-between pt-4">
           <p className="text-xl font-bold text-blue-600">
             ${product.price.toFixed(2)}
@@ -106,12 +93,12 @@ export default function ProductCard({ product }: { product: Product }) {
                 image: product.images?.[0],
               })
             }
-            className="text-sm bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition shadow"
+            className="rounded-lg bg-blue-600 px-4 py-2 text-sm text-white shadow transition hover:bg-blue-700"
           >
             Add
           </button>
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 }

@@ -5,23 +5,6 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "../../context/AuthContext";
 import { useCart } from "../../context/CartContext";
 
-declare global {
-  interface Window {
-    PaystackPop?: {
-      setup: (options: {
-        key: string;
-        email: string;
-        amount: number;
-        currency: string;
-        callback: (response: { reference: string }) => void;
-        onClose: () => void;
-      }) => {
-        openIframe: () => void;
-      };
-    };
-  }
-}
-
 const PAYSTACK_SCRIPT_SRC = "https://js.paystack.co/v1/inline.js";
 
 const ensurePaystackReady = async () => {

@@ -13,6 +13,7 @@ export interface CartItem {
 
 type CartProductInput = Omit<CartItem, "quantity"> & {
   images?: string[];
+  quantity?: number;
 };
 
 interface CartContextType {
@@ -56,7 +57,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     id: product.id,
     name: product.name,
     price: product.price,
-    quantity: product.quantity,
+    quantity: product.quantity ?? 1,
     image: product.image || product.images?.[0] || "/placeholder.png",
   });
 

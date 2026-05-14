@@ -1,11 +1,7 @@
-"use client";
-
-import { CartProvider } from "../context/CartContext";
-import { AuthProvider } from "../context/AuthContext";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import Providers from "@/components/Providers";
 import "../styles/globals.css";
-import { Toaster } from "react-hot-toast";
 import Script from "next/script";
 
 export default function RootLayout({
@@ -15,35 +11,16 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="flex flex-col min-h-screen bg-gray-50">
-
-        {/* ✅ Paystack Script (FIXED) */}
+      <body className="flex min-h-screen flex-col bg-gray-50">
         <Script
           src="https://js.paystack.co/v1/inline.js"
           strategy="afterInteractive"
         />
-
-        {/* ✅ Providers (Auth FIRST, then Cart) */}
-        <AuthProvider>
-          <CartProvider>
-            
-            {/* Navbar */}
-            <Navbar />
-
-            {/* Toast Notifications */}
-            <Toaster position="top-right" reverseOrder={false} />
-
-            {/* Main Content */}
-            <main className="flex-1">
-              {children}
-            </main>
-
-            {/* Footer */}
-            <Footer />
-
-          </CartProvider>
-        </AuthProvider>
-
+        <Providers>
+          <Navbar />
+          <main className="flex-1">{children}</main>
+          <Footer />
+        </Providers>
       </body>
     </html>
   );
